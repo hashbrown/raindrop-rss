@@ -160,6 +160,7 @@ activemq-data/
 .wrangler/
 python_modules/
 node_modules/
+.working_docs/
 env/
 venv/
 ENV/
