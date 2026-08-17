@@ -36,7 +36,9 @@ For GitHub Actions, create the Cloudflare API token from **My Profile → API
 Tokens → Create Token** using the Workers edit permissions, scoped to this
 Cloudflare account and the `alloneof.me` zone. Store the token value as the
 `CLOUDFLARE_API_TOKEN` secret in the GitHub `production` environment. Do not
-put the token in `.dev.vars`, the repository, or a command-line argument.
+put the token in `.dev.vars`, the repository, or a command-line argument. The
+Cloudflare token used for this deployment is named
+`AllOneOfMe-Feeds_Workers-Edit`.
 
 For GitHub Actions, configure these production-environment values:
 
