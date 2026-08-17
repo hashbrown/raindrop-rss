@@ -1,0 +1,24 @@
+docs/OPERATIONS.md
+  s_7ce5ad4bc4121b::t_e7fca5c07677bb 39-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "6855f755887d9f3454c9115f9314d3025f3feb9f",
+  "prompts": {},
+  "humans": {
+    "h_00eb66f3b967dd": {
+      "author": "Brad Armstrong <hashbrown1+git@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_7ce5ad4bc4121b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a00d4c-9cde-79b0-8136-51b6526623ce",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "Brad Armstrong <hashbrown1+git@gmail.com>"
+    }
+  }
+}
