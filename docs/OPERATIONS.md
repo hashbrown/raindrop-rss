@@ -32,11 +32,22 @@ Create a Raindrop test token with read access and store it as a Worker secret:
 npx wrangler secret put RAINDROP_API_TOKEN
 ```
 
-For GitHub Actions, configure these repository secrets:
+For GitHub Actions, create the Cloudflare API token from **My Profile → API
+Tokens → Create Token** using the Workers edit permissions, scoped to this
+Cloudflare account and the `alloneof.me` zone. Store the token value as the
+`CLOUDFLARE_API_TOKEN` secret in the GitHub `production` environment. Do not
+put the token in `.dev.vars`, the repository, or a command-line argument.
+
+For GitHub Actions, configure these production-environment values:
 
 - `CLOUDFLARE_API_TOKEN`
-- `CLOUDFLARE_ACCOUNT_ID`
 - `RAINDROP_API_TOKEN`
+
+Configure `CLOUDFLARE_ACCOUNT_ID` as a GitHub Actions **variable**, not a
+secret, under **Repository Settings → Environments → production → Variables**.
+The workflow reads it from `${{ vars.CLOUDFLARE_ACCOUNT_ID }}`. Find the value
+in the Cloudflare dashboard account URL or the account details panel; it is a
+32-character account identifier, not the zone ID.
 
 The Raindrop token must never appear in `wrangler.jsonc`, `config/feeds.json`, logs, fixtures, or committed `.dev.vars` files.
 
