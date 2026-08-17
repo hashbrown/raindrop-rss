@@ -1,0 +1,28 @@
+docs/DEVELOPMENT.md
+  s_bed2c7143e8aa9::t_97d00de20e3f9e 103-118
+docs/OPERATIONS.md
+  s_bed2c7143e8aa9::t_97d00de20e3f9e 98
+README.md
+  s_bed2c7143e8aa9::t_97d00de20e3f9e 34-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "1513fd99ffbccd7669d21bf423b0976707a64925",
+  "prompts": {},
+  "humans": {
+    "h_00eb66f3b967dd": {
+      "author": "Brad Armstrong <hashbrown1+git@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_bed2c7143e8aa9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a01108-e995-75b3-864c-b94c7661b032",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "Brad Armstrong <hashbrown1+git@gmail.com>"
+    }
+  }
+}
