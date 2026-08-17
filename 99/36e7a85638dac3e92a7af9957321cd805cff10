@@ -1,0 +1,35 @@
+tests/test_models_and_render.py
+  s_5b711618504c74::t_c6920f4cba2415 31-41
+tests/test_config.py
+  s_5b711618504c74::t_c6920f4cba2415 29-33,54-67
+  s_5b711618504c74::t_c447c9b445a73a 68
+src/raindrop_rss/models.py
+  s_5b711618504c74::t_c6920f4cba2415 35-39,58-63,85-88,104
+src/raindrop_rss/config.py
+  s_5b711618504c74::t_c6920f4cba2415 41-42,55,154-172,180-181
+src/raindrop_rss/service.py
+  s_5b711618504c74::t_c6920f4cba2415 111-116
+README.md
+  s_5b711618504c74::t_c6920f4cba2415 33-34,50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "9936e7a85638dac3e92a7af9957321cd805cff10",
+  "prompts": {},
+  "humans": {
+    "h_00eb66f3b967dd": {
+      "author": "Brad Armstrong <hashbrown1+git@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_5b711618504c74": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0113a-ad20-7b70-8c13-3fd33086b092",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "Brad Armstrong <hashbrown1+git@gmail.com>"
+    }
+  }
+}
