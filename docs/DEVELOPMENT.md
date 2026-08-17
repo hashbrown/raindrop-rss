@@ -93,7 +93,7 @@ git diff -- src/raindrop_rss/embedded_config.py
 uv run ruff check .
 uv run pytest
 uv run python scripts/smoke_test.py
-npx wrangler deploy --dry-run
+uv run pywrangler deploy --dry-run
 ```
 
 The generated-file diff is expected after changing feed configuration; review

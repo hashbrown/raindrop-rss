@@ -27,7 +27,7 @@ jobs:
       - run: uv run ruff check .
       - run: uv run pytest
       - run: uv run python scripts/smoke_test.py
-      - run: npx wrangler deploy --dry-run
+      - run: uv run pywrangler deploy --dry-run
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -50,7 +50,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
       - name: Deploy Worker
-        run: npx wrangler deploy
+        run: uv run pywrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}

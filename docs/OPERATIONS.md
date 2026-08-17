@@ -85,10 +85,10 @@ uv run python scripts/generate_feed_config.py
 uv run ruff check .
 uv run pytest
 uv run python scripts/smoke_test.py
-npx wrangler deploy --dry-run
+uv run pywrangler deploy --dry-run
 ```
 
-Deploy manually with `npx wrangler deploy`, or merge to `main` after configuring the GitHub secrets. The workflow tests before deployment and updates `RAINDROP_API_TOKEN` as a Worker secret without committing it.
+Deploy manually with `uv run pywrangler deploy`, or merge to `main` after configuring the GitHub secrets. The workflow tests before deployment and updates `RAINDROP_API_TOKEN` as a Worker secret without committing it. `pywrangler` synchronizes the Python Worker package bundle before invoking Wrangler.
 
 Feed additions and configuration changes should follow the development
 workflow. Do not edit KV state or R2 feed objects by hand as part of a normal
