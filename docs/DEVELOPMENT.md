@@ -100,11 +100,22 @@ The generated-file diff is expected after changing feed configuration; review
 it and commit it with `config/feeds.json`. CI regenerates the file from a clean
 checkout and fails if the committed artifact is not current.
 
-The tests cover configuration validation, any-tag matching, article filtering,
-pagination, deduplication, XML rendering, notes, scheduling, R2-before-KV
-publication, conditional requests, cache headers, and last-known-good failure
-behavior. The smoke test validates the cached two-item Atom/RSS acceptance
-fixture without contacting Raindrop.
+The tests cover configuration validation, any-tag matching, bounded
+per-tag pagination, article filtering, deduplication, XML rendering, notes,
+scheduling, R2-before-KV publication, conditional requests, cache headers,
+and last-known-good failure behavior. The smoke test validates the cached
+two-item Atom/RSS acceptance fixture without contacting Raindrop.
+
+## Retrieval policy
+
+`max_items` is both the feed size and the per-tag candidate bound. Raindrop
+returns each tag search newest first, so each synchronization fetches at most
+`max_items` article candidates for each configured tag. The Worker combines
+those candidates, filters and deduplicates them, sorts them newest first, then
+emits at most `max_items` items. This is intentional: the newest global
+`max_items` results must be among the newest `max_items` results of at least
+one matching tag, while the bound prevents a large collection from making a
+scheduled Worker invocation unbounded.
 
 ## Source layout
 

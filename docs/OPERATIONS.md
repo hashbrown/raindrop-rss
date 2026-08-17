@@ -95,7 +95,7 @@ workflow. Do not edit KV state or R2 feed objects by hand as part of a normal
 release; the next scheduled synchronization publishes the new immutable
 objects and updates the KV pointers.
 
-Cron runs hourly. A feed synchronizes immediately when it has no state or its configuration fingerprint changes; otherwise its own `sync_interval_hours` controls when it is due. A failed sync retains the previous object pointers and remains due for the next hourly retry.
+Cron runs hourly. A feed synchronizes immediately when it has no state or its configuration fingerprint changes; otherwise its own `sync_interval_hours` controls when it is due. A failed sync retains the previous object pointers and remains due for the next hourly retry. Each sync deliberately bounds Raindrop retrieval to the newest `max_items` candidates per configured tag before combining, deduplicating, and limiting the feed; see the [retrieval policy](DEVELOPMENT.md#retrieval-policy) for why this retains the newest possible feed items without unbounded collection scans.
 
 ## First-deployment verification
 
