@@ -30,6 +30,8 @@ runtime feed-administration endpoint. To add a feed, add an object to the
 - `title` and `description`: feed metadata;
 - `tags`: one or more Raindrop tags, matched case-insensitively with OR
   semantics;
+- `redacted_tags`: optional tags to omit from article categories, matched
+  case-insensitively. This is useful for tags that trigger feed automation;
 - `sync_interval_hours`: optional, default `24`;
 - `max_items`: optional, default `100`. For each configured tag, the sync
   fetches up to this many newest article candidates, combines the tag results,
@@ -45,6 +47,7 @@ For example:
   "title": "Design Bookmarks",
   "description": "Recent articles saved with design-related tags.",
   "tags": ["design", "ux"],
+  "redacted_tags": ["automation"],
   "sync_interval_hours": 24,
   "max_items": 100
 }

@@ -28,6 +28,17 @@ def test_note_is_preferred_and_excerpt_is_fallback() -> None:
     assert normalize_raindrop(raindrop_item(2, note=""), tags).summary == "An excerpt"
 
 
+def test_redacted_tags_are_not_emitted_as_categories() -> None:
+    items = select_feed_items(
+        [raindrop_item(1, tags=["AI", "Automation"])],
+        frozenset({"ai", "automation"}),
+        100,
+        frozenset({"automation"}),
+    )
+
+    assert items[0].categories == ("AI",)
+
+
 def test_atom_contains_required_metadata_and_escapes_text(app_config) -> None:
     feed = app_config.feeds[0]
     raw = raindrop_item(7, tags=["ai"], note="A <note> & detail")

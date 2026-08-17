@@ -108,7 +108,12 @@ class FeedService:
         raw_items: list[dict[str, Any]],
         now: datetime,
     ) -> None:
-        items = select_feed_items(raw_items, feed.normalized_tags, feed.max_items)
+        items = select_feed_items(
+            raw_items,
+            feed.normalized_tags,
+            feed.max_items,
+            feed.normalized_redacted_tags,
+        )
         atom_content = render_atom(self.config, feed, items, now)
         rss_content = render_rss(self.config, feed, items, now)
         atom_hash = digest(atom_content)

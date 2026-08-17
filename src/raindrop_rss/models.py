@@ -32,7 +32,11 @@ class FeedItem:
     categories: tuple[str, ...]
 
 
-def normalize_raindrop(raw: dict[str, Any], matching_tags: frozenset[str]) -> FeedItem:
+def normalize_raindrop(
+    raw: dict[str, Any],
+    matching_tags: frozenset[str],
+    redacted_tags: frozenset[str] = frozenset(),
+) -> FeedItem:
     try:
         raindrop_id = int(raw["_id"])
     except (KeyError, TypeError, ValueError) as exc:
@@ -51,7 +55,12 @@ def normalize_raindrop(raw: dict[str, Any], matching_tags: frozenset[str]) -> Fe
     categories = tuple(
         tag.strip()
         for tag in tags_raw
-        if isinstance(tag, str) and tag.strip() and tag.strip().casefold() in matching_tags
+        if (
+            isinstance(tag, str)
+            and tag.strip()
+            and tag.strip().casefold() in matching_tags
+            and tag.strip().casefold() not in redacted_tags
+        )
     )
 
     note = raw.get("note") if isinstance(raw.get("note"), str) else ""
@@ -73,7 +82,10 @@ def normalize_raindrop(raw: dict[str, Any], matching_tags: frozenset[str]) -> Fe
 
 
 def select_feed_items(
-    raw_items: list[dict[str, Any]], matching_tags: frozenset[str], max_items: int
+    raw_items: list[dict[str, Any]],
+    matching_tags: frozenset[str],
+    max_items: int,
+    redacted_tags: frozenset[str] = frozenset(),
 ) -> list[FeedItem]:
     selected: list[FeedItem] = []
     seen_ids: set[int] = set()
@@ -89,7 +101,7 @@ def select_feed_items(
         if not normalized.intersection(matching_tags):
             continue
         try:
-            item = normalize_raindrop(raw, matching_tags)
+            item = normalize_raindrop(raw, matching_tags, redacted_tags)
         except RaindropDataError:
             continue
         if item.raindrop_id in seen_ids:

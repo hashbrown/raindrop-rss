@@ -38,6 +38,8 @@ class FeedConfig:
     description: str
     tags: tuple[str, ...]
     normalized_tags: frozenset[str]
+    redacted_tags: tuple[str, ...]
+    normalized_redacted_tags: frozenset[str]
     sync_interval_hours: int
     max_items: int
 
@@ -50,6 +52,7 @@ class FeedConfig:
             "title": self.title,
             "description": self.description,
             "tags": self.tags,
+            "redacted_tags": self.redacted_tags,
             "sync_interval_hours": self.sync_interval_hours,
             "max_items": self.max_items,
         }
@@ -148,6 +151,25 @@ def load_config(source: str | bytes) -> AppConfig:
             tags.append(display_tag)
             normalized_tags.add(normalized)
 
+        redacted_tags_raw = item.get("redacted_tags", [])
+        if not isinstance(redacted_tags_raw, list):
+            raise ConfigurationError(f"{context}.redacted_tags must be an array")
+        redacted_tags: list[str] = []
+        normalized_redacted_tags: set[str] = set()
+        for tag in redacted_tags_raw:
+            if not isinstance(tag, str) or not tag.strip():
+                raise ConfigurationError(
+                    f"{context}.redacted_tags must contain non-empty strings"
+                )
+            display_tag = tag.strip()
+            normalized = display_tag.casefold()
+            if normalized in normalized_redacted_tags:
+                raise ConfigurationError(
+                    f"{context}.redacted_tags contains duplicate tag {display_tag!r}"
+                )
+            redacted_tags.append(display_tag)
+            normalized_redacted_tags.add(normalized)
+
         feeds.append(
             FeedConfig(
                 slug=slug,
@@ -155,6 +177,8 @@ def load_config(source: str | bytes) -> AppConfig:
                 description=_required_string(item, "description", context),
                 tags=tuple(tags),
                 normalized_tags=frozenset(normalized_tags),
+                redacted_tags=tuple(redacted_tags),
+                normalized_redacted_tags=frozenset(normalized_redacted_tags),
                 sync_interval_hours=_positive_int(
                     item.get("sync_interval_hours", 24),
                     "sync_interval_hours",

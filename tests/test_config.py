@@ -26,6 +26,11 @@ def test_load_config_defaults_per_feed_max_items() -> None:
         (lambda raw: raw["feeds"][0].update(slug="Bad Slug"), "slug"),
         (lambda raw: raw["feeds"][0].update(tags=[]), "tags"),
         (lambda raw: raw["feeds"][0].update(tags=["AI", "ai"]), "duplicate tag"),
+        (lambda raw: raw["feeds"][0].update(redacted_tags="automation"), "redacted_tags"),
+        (
+            lambda raw: raw["feeds"][0].update(redacted_tags=["automation", "AUTOMATION"]),
+            "duplicate tag",
+        ),
         (lambda raw: raw["feeds"][0].update(sync_interval_hours=0), "sync_interval_hours"),
         (lambda raw: raw["feeds"][0].update(max_items=0), "max_items"),
         (lambda raw: raw["feeds"].append(dict(raw["feeds"][0])), "duplicate feed slug"),
@@ -45,4 +50,19 @@ def test_config_fingerprint_changes_with_feed_limit() -> None:
     feed2 = second.feeds[0]
     assert feed1.fingerprint(first.publisher_name, first.base_url, first.language) != (
         feed2.fingerprint(second.publisher_name, second.base_url, second.language)
+    )
+
+
+def test_config_normalizes_redacted_tags_and_includes_them_in_the_fingerprint() -> None:
+    raw = json.loads(config_json())
+    raw["feeds"][0]["redacted_tags"] = [" Automation "]
+    config = load_config(json.dumps(raw))
+    feed = config.feeds[0]
+
+    assert feed.redacted_tags == ("Automation",)
+    assert feed.normalized_redacted_tags == frozenset({"automation"})
+    assert feed.fingerprint(config.publisher_name, config.base_url, config.language) != (
+        load_config(config_json()).feeds[0].fingerprint(
+            config.publisher_name, config.base_url, config.language
+        )
     )
