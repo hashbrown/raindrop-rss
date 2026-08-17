@@ -1,5 +1,11 @@
 # Operations
 
+This guide covers operating an already-developed deployment: Cloudflare
+resources, secrets, DNS/custom domains, releases, health checks, monitoring,
+cache verification, recovery, and rollback. To add feeds or change the Worker,
+see [Development](DEVELOPMENT.md) and the feed-management section in the
+[README](../README.md).
+
 ## Cloudflare resources
 
 Authenticate Wrangler first. R2 must also be enabled for the account through
@@ -70,6 +76,11 @@ npx wrangler deploy --dry-run
 ```
 
 Deploy manually with `npx wrangler deploy`, or merge to `main` after configuring the GitHub secrets. The workflow tests before deployment and updates `RAINDROP_API_TOKEN` as a Worker secret without committing it.
+
+Feed additions and configuration changes should follow the development
+workflow. Do not edit KV state or R2 feed objects by hand as part of a normal
+release; the next scheduled synchronization publishes the new immutable
+objects and updates the KV pointers.
 
 Cron runs hourly. A feed synchronizes immediately when it has no state or its configuration fingerprint changes; otherwise its own `sync_interval_hours` controls when it is due. A failed sync retains the previous object pointers and remains due for the next hourly retry.
 

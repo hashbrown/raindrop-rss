@@ -1,71 +1,77 @@
 # raindrop-rss
 
 Publish Atom 1.0 and RSS 2.0 feeds from tagged article bookmarks in Raindrop.io.
+Each configured feed is available from the public custom domain
+`https://feeds.alloneof.me`.
 
-The Cloudflare Python Worker synchronizes on an hourly cron, queries Raindrop by each feed's configured tags and article type, and keeps the latest configured number of matches (100 by default). It paginates only as far as needed to satisfy that limit, merges multi-tag results with OR semantics, and deduplicates them. Generated XML is stored as immutable R2 objects; KV stores only the active object pointers and synchronization status. Public feed requests never call Raindrop.
+## Use the feeds
 
-## Routes
+Add one of these URLs to an RSS reader, newsletter tool, or other feed consumer:
 
-- `/<slug>.atom` — canonical Atom 1.0 feed
-- `/<slug>.rss` — RSS 2.0 compatibility feed
-- `/health` — non-secret synchronization status; returns `200` when healthy and `503`
-  when any feed is unavailable or its latest synchronization failed
+- `https://feeds.alloneof.me/<slug>.atom` — canonical Atom 1.0 output.
+- `https://feeds.alloneof.me/<slug>.rss` — RSS 2.0 compatibility output.
 
-The acceptance feed is configured at `/raindrop-test.atom` and `/raindrop-test.rss`. Its limit is 100, but it should contain exactly two articles because that is the current number of source articles tagged `rss`.
+The feed contains article bookmarks from Raindrop.io, not copied article
+content. A bookmark's optional Notes field is emitted as the entry summary or
+RSS description. Markdown is intentionally left as plain text for now; a future
+web view can render it as Markdown.
 
-## Local development
+`https://feeds.alloneof.me/health` is a non-secret status endpoint. It returns
+`200` when every configured feed has a successful Atom/RSS publication and no
+recorded synchronization error, and `503` when the service is degraded.
 
-Requirements: Python 3.13, [uv](https://docs.astral.sh/uv/), and a supported Node.js release. C3-generated Workers projects install Wrangler locally; this repository likewise pins Wrangler in `package-lock.json`, while `uv.lock` and `pylock.toml` pin the Python development and Worker runtimes.
+## Manage feeds
 
-```bash
-npm ci
-uv sync --locked
-uv run ruff check .
-uv run pytest
-uv run python scripts/smoke_test.py
-npx wrangler deploy --dry-run
+Feeds are managed in [`config/feeds.json`](config/feeds.json). There is no
+runtime feed-administration endpoint. To add a feed, add an object to the
+`feeds` array with:
+
+- `slug`: the URL-safe feed name; it becomes `/<slug>.atom` and `/<slug>.rss`;
+- `title` and `description`: feed metadata;
+- `tags`: one or more Raindrop tags, matched case-insensitively with OR
+  semantics;
+- `sync_interval_hours`: optional, default `24`;
+- `max_items`: optional, default `100`, applied after pagination, filtering,
+  sorting, and deduplication.
+
+For example:
+
+```json
+{
+  "slug": "design",
+  "title": "Design Bookmarks",
+  "description": "Recent articles saved with design-related tags.",
+  "tags": ["design", "ux"],
+  "sync_interval_hours": 24,
+  "max_items": 100
+}
 ```
 
-When `config/feeds.json` changes, regenerate and verify its bundled Python representation:
+After editing the file, run the configuration generator and tests from the
+repository root:
 
 ```bash
 uv run python scripts/generate_feed_config.py
-uv run pytest tests/test_generated_config.py
+uv run pytest
 ```
 
-To run the Worker locally, copy `.dev.vars.example` to `.dev.vars`, provide a Raindrop test token, and run:
+The generator copies the canonical, version-controlled JSON into the Python
+module bundled into the Worker; the application validates it when loaded. The
+generated file is a deployment artifact; edit `config/feeds.json`, never
+`src/raindrop_rss/embedded_config.py` directly.
+Commit both files together through the normal review workflow. After the
+deployment completes, the next hourly Cron evaluation synchronizes a new feed
+immediately because its configuration has no current state. Verify the new
+URL and `/health` before sharing it.
 
-```bash
-npx wrangler dev --test-scheduled
-```
+The acceptance feed is `raindrop-test`. It uses the `rss` tag and keeps
+`max_items` at 100; it should contain exactly two articles because that is the
+current number of matching source bookmarks, not because the feed is limited
+to two.
 
-Local KV and R2 bindings use Wrangler's local persistence and do not access production resources. Trigger the cron handler with:
+## Project documentation
 
-```bash
-curl "http://localhost:8787/cdn-cgi/handler/scheduled?format=json"
-```
-
-See [docs/OPERATIONS.md](docs/OPERATIONS.md) for Cloudflare setup, deployment, cache configuration, verification, and rollback.
-
-## Local monitoring
-
-The dependency-free monitor exits `0` when all feeds are healthy, `1` when the
-service is degraded, and `2` when the check itself cannot be completed:
-
-```bash
-uv run python scripts/check_monitor.py
-```
-
-It can also query the saved Cloudflare Workers Observability error query over a
-recent time window. See [docs/OPERATIONS.md](docs/OPERATIONS.md#local-monitoring)
-for credentials, options, and automation examples.
-
-## Configuration
-
-`config/feeds.json` is authoritative. Each feed supports:
-
-- `slug`, `title`, `description`, and one or more `tags`;
-- `sync_interval_hours`, defaulting to 24;
-- `max_items`, defaulting to the latest 100 matching articles.
-
-Tag matching is case-insensitive and uses any configured tag. Filtering and deduplication happen before the per-feed item limit is applied.
+- [Development guide](docs/DEVELOPMENT.md): local setup, configuration
+  generation, architecture, tests, and the release workflow.
+- [Operations guide](docs/OPERATIONS.md): Cloudflare resources, secrets,
+  deployment, monitoring, caching, recovery, and rollback.
