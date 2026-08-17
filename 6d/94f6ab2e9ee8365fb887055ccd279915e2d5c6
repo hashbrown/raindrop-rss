@@ -1,0 +1,28 @@
+.github/workflows/deploy.yml
+  s_7ce5ad4bc4121b::t_032c92e70e1f44 30,53
+docs/DEVELOPMENT.md
+  s_7ce5ad4bc4121b::t_032c92e70e1f44 96
+docs/OPERATIONS.md
+  s_7ce5ad4bc4121b::t_032c92e70e1f44 88,91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "6d94f6ab2e9ee8365fb887055ccd279915e2d5c6",
+  "prompts": {},
+  "humans": {
+    "h_00eb66f3b967dd": {
+      "author": "Brad Armstrong <hashbrown1+git@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_7ce5ad4bc4121b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a00d4c-9cde-79b0-8136-51b6526623ce",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "Brad Armstrong <hashbrown1+git@gmail.com>"
+    }
+  }
+}
