@@ -1,0 +1,39 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "raindrop-rss",
+  "main": "src/worker.py",
+  "compatibility_date": "2026-08-16",
+  "compatibility_flags": ["python_workers"],
+  "workers_dev": false,
+  "routes": [
+    {
+      "pattern": "feeds.alloneof.me",
+      "custom_domain": true
+    }
+  ],
+  "cache": {
+    "enabled": true
+  },
+  "kv_namespaces": [
+    {
+      "binding": "FEED_STATE",
+      "id": "a5bddbbaeb5342ad881e5c99204a2f0d"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "FEED_XML",
+      "bucket_name": "raindrop-rss-feeds"
+    }
+  ],
+  "triggers": {
+    "crons": ["0 * * * *"]
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "python_modules": {
+    "excludes": ["**/*.pyc", "**/__pycache__"]
+  }
+}

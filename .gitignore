@@ -151,6 +151,15 @@ activemq-data/
 .env
 .envrc
 .venv
+.venv-workers/
+
+# Cloudflare Workers local state and secrets
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.wrangler/
+python_modules/
+node_modules/
 env/
 venv/
 ENV/

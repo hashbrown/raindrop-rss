@@ -1,0 +1,2 @@
+# Copy to .dev.vars for local development. Never commit the real token.
+RAINDROP_API_TOKEN=replace-with-a-raindrop-test-token

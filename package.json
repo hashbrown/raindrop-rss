@@ -1,0 +1,10 @@
+{
+  "name": "raindrop-rss-worker-tooling",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "wrangler": "4.123.0"
+  }
+}
