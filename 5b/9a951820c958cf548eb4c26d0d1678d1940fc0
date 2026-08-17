@@ -1,0 +1,14 @@
+src/raindrop_rss/embedded_config.py
+  h_00eb66f3b967dd 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "5b9a951820c958cf548eb4c26d0d1678d1940fc0",
+  "prompts": {},
+  "humans": {
+    "h_00eb66f3b967dd": {
+      "author": "Brad Armstrong <hashbrown1+git@gmail.com>"
+    }
+  }
+}
