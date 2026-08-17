@@ -58,7 +58,6 @@ def normalize_raindrop(
         if (
             isinstance(tag, str)
             and tag.strip()
-            and tag.strip().casefold() in matching_tags
             and tag.strip().casefold() not in redacted_tags
         )
     )

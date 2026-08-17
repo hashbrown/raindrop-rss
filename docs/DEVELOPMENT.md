@@ -45,7 +45,8 @@ Adding a feed does not require a new Worker, KV namespace, R2 bucket, secret,
 or DNS record. Add the feed definition, regenerate the embedded configuration,
 run the checks, and deploy through the normal pull request workflow. A new or
 changed configuration fingerprint causes the next scheduled evaluation to
-sync that feed immediately.
+sync that feed immediately. Production deployments also invoke an
+authenticated, one-time sync after the Worker deploys.
 
 ## Local Worker
 

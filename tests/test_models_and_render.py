@@ -30,13 +30,13 @@ def test_note_is_preferred_and_excerpt_is_fallback() -> None:
 
 def test_redacted_tags_are_not_emitted_as_categories() -> None:
     items = select_feed_items(
-        [raindrop_item(1, tags=["AI", "Automation"])],
+        [raindrop_item(1, tags=["AI", "Architecture", "Automation"])],
         frozenset({"ai", "automation"}),
         100,
         frozenset({"automation"}),
     )
 
-    assert items[0].categories == ("AI",)
+    assert items[0].categories == ("AI", "Architecture")
 
 
 def test_atom_contains_required_metadata_and_escapes_text(app_config) -> None:

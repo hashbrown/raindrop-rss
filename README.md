@@ -31,7 +31,8 @@ runtime feed-administration endpoint. To add a feed, add an object to the
 - `tags`: one or more Raindrop tags, matched case-insensitively with OR
   semantics;
 - `redacted_tags`: optional tags to omit from article categories, matched
-  case-insensitively. This is useful for tags that trigger feed automation;
+  case-insensitively. All other article tags are emitted as categories, so this
+  is useful for tags that trigger feed automation;
 - `sync_interval_hours`: optional, default `24`;
 - `max_items`: optional, default `100`. For each configured tag, the sync
   fetches up to this many newest article candidates, combines the tag results,
@@ -66,9 +67,9 @@ module bundled into the Worker; the application validates it when loaded. The
 generated file is a deployment artifact; edit `config/feeds.json`, never
 `src/raindrop_rss/embedded_config.py` directly.
 Commit both files together through the normal review workflow. After the
-deployment completes, the next hourly Cron evaluation synchronizes a new feed
-immediately because its configuration has no current state. Verify the new
-URL and `/health` before sharing it.
+deployment completes, CI invokes an authenticated synchronization so every
+feed is refreshed immediately. The hourly Cron remains the regular sync
+mechanism. Verify the new URL and `/health` before sharing it.
 
 The acceptance feed is `raindrop-test`. It uses the `rss` tag and keeps
 `max_items` at 100; it should contain exactly two articles because that is the

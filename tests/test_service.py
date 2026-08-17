@@ -52,6 +52,19 @@ async def test_not_due_feed_does_not_call_raindrop(app_config) -> None:
     assert raindrop.calls == 1
 
 
+async def test_forced_sync_updates_a_feed_before_its_next_sync_time(app_config) -> None:
+    kv, r2 = FakeKV(), FakeR2()
+    service = FeedService(app_config, kv, r2, FakeRaindrop([raindrop_item(1)]))
+    await service.sync_due(NOW)
+
+    forced_raindrop = FakeRaindrop([raindrop_item(2)])
+    service.raindrop = forced_raindrop
+    result = await service.sync_all(NOW + timedelta(minutes=1))
+
+    assert result.succeeded == ("ai",)
+    assert forced_raindrop.calls == 1
+
+
 async def test_configuration_change_forces_immediate_sync(app_config) -> None:
     kv, r2 = FakeKV(), FakeR2()
     first = FeedService(app_config, kv, r2, FakeRaindrop([raindrop_item(1)]))

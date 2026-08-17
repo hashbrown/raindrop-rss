@@ -82,12 +82,25 @@ class FeedService:
             state = await self.get_state(feed.slug)
             if state.is_due(now, self._fingerprint(feed)):
                 due.append((feed, state))
-        if not due:
+        return await self._sync_feeds(due, now)
+
+    async def sync_all(self, now: datetime | None = None) -> SyncResult:
+        """Synchronize every configured feed, regardless of its next sync time."""
+        now = (now or datetime.now(UTC)).astimezone(UTC)
+        feeds_and_states = [
+            (feed, await self.get_state(feed.slug)) for feed in self.config.feeds
+        ]
+        return await self._sync_feeds(feeds_and_states, now)
+
+    async def _sync_feeds(
+        self, feeds_and_states: list[tuple[FeedConfig, FeedState]], now: datetime
+    ) -> SyncResult:
+        if not feeds_and_states:
             return SyncResult(attempted=0, succeeded=(), failed=())
 
         succeeded: list[str] = []
         failed: list[str] = []
-        for feed, state in due:
+        for feed, state in feeds_and_states:
             try:
                 raw_items = await self.raindrop.fetch_matching(feed.tags, feed.max_items)
                 await self._sync_feed(feed, state, raw_items, now)
@@ -99,7 +112,7 @@ class FeedService:
                 failed.append(feed.slug)
             else:
                 succeeded.append(feed.slug)
-        return SyncResult(len(due), tuple(succeeded), tuple(failed))
+        return SyncResult(len(feeds_and_states), tuple(succeeded), tuple(failed))
 
     async def _sync_feed(
         self,

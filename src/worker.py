@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hmac
+import json
 from typing import Any
 from urllib.parse import urlparse
 
@@ -66,12 +68,34 @@ class Default(WorkerEntrypoint):
 
     async def fetch(self, request):
         service = self._service()
-        application = FeedApplication(CONFIG, service)
         parsed = urlparse(request.url)
-        headers = {str(key): str(value) for key, value in request.headers.items()}
+        headers = {str(key).lower(): str(value) for key, value in request.headers.items()}
         method = getattr(request.method, "value", str(request.method))
+        if parsed.path == "/_internal/sync":
+            if method != "POST" or not self._is_authorized_sync(headers):
+                return Response("Not found", status=404)
+            result = await service.sync_all()
+            status = 502 if result.failed else 200
+            return Response(
+                json.dumps(
+                    {
+                        "attempted": result.attempted,
+                        "succeeded": result.succeeded,
+                        "failed": result.failed,
+                    }
+                ),
+                status=status,
+                headers={"Content-Type": "application/json; charset=utf-8"},
+            )
+
+        application = FeedApplication(CONFIG, service)
         result = await application.handle(method, parsed.path, headers)
         return Response(result.body, status=result.status, headers=result.headers)
+
+    def _is_authorized_sync(self, headers: dict[str, str]) -> bool:
+        token = headers.get("authorization", "")
+        expected = f"Bearer {self.env.RAINDROP_API_TOKEN}"
+        return hmac.compare_digest(token, expected)
 
     async def scheduled(self, controller, env, ctx):
         result = await self._service().sync_due()
