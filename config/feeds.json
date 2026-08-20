@@ -10,7 +10,7 @@
   "feeds": [
     {
       "slug": "eng",
-      "title": "My Shared Engineering Reads ",
+      "title": "Brad Armstrong - Engineering Reads ",
       "description": "Feed your brain, update your priors. Broadly focused on software engineering. Biased for my teams or my interests. I mean it's my bookmarks after all.",
       "tags": ["rss-eng"],
       "redacted_tags": ["rss-eng", "rss-eng-mgmt", "mc", "mc-eng", "mc-leaders", "c42"],
@@ -19,19 +19,10 @@
     },
     {
       "slug": "eng-leaders",
-      "title": "My Shared Engineering Leadership Reads",
+      "title": "Brad Armstrong -  Engineering Leadership Reads",
       "description": "Feed your brain, update your priors. Broadly focused on leadership in product and software engineering orgs. Biased for my teams or my interests. I mean it's my bookmarks after all.",
       "tags": ["rss-eng-mgmt"],
       "redacted_tags": ["rss-eng", "rss-eng-mgmt", "mc", "mc-eng", "mc-leaders", "c42"],
-      "sync_interval_hours": 24,
-      "max_items": 100
-    },
-    {
-      "slug": "raindrop-test",
-      "title": "Raindrop RSS Test",
-      "description": "The latest articles saved with the rss tag.",
-      "tags": ["rss"],
-      "redacted_tags": ["rss"],
       "sync_interval_hours": 24,
       "max_items": 100
     }

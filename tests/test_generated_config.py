@@ -18,6 +18,6 @@ def test_embedded_config_is_current() -> None:
 
 def test_production_acceptance_feed_is_not_truncated_to_expected_count() -> None:
     config = json.loads((ROOT / "config" / "feeds.json").read_text(encoding="utf-8"))
-    acceptance = next(feed for feed in config["feeds"] if feed["slug"] == "raindrop-test")
-    assert acceptance["tags"] == ["rss"]
-    assert acceptance["max_items"] > 2
+    acceptance = next(feed for feed in config["feeds"] if feed["slug"] == "eng")
+    assert acceptance["tags"] == ["rss-eng"]
+    assert acceptance["max_items"] == 100
