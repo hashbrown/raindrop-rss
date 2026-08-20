@@ -1,0 +1,18 @@
+config/feeds.json
+  h_00eb66f3b967dd 13,22
+tests/test_generated_config.py
+  h_00eb66f3b967dd 21-23
+src/raindrop_rss/embedded_config.py
+  h_00eb66f3b967dd 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "50a73880d4808122ae86c7f1d42e7fe1270c86e7",
+  "prompts": {},
+  "humans": {
+    "h_00eb66f3b967dd": {
+      "author": "Brad Armstrong <hashbrown1+git@gmail.com>"
+    }
+  }
+}
