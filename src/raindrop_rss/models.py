@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
+from urllib.parse import urlsplit
 
 
 class RaindropDataError(ValueError):
@@ -30,6 +31,20 @@ class FeedItem:
     published: datetime
     updated: datetime
     categories: tuple[str, ...]
+    thumbnail_url: str | None = None
+
+
+def _thumbnail_url(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    try:
+        url = urlsplit(value)
+        if url.scheme == "https" and url.hostname and url.username is None:
+            return value
+    except ValueError:
+        pass
+    return None
 
 
 def normalize_raindrop(
@@ -77,6 +92,7 @@ def normalize_raindrop(
         published=published,
         updated=updated,
         categories=categories,
+        thumbnail_url=_thumbnail_url(raw.get("cover")),
     )
 
 

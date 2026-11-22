@@ -5,7 +5,7 @@ from xml.etree import ElementTree as ET
 from conftest import NOW, raindrop_item
 
 from raindrop_rss.models import normalize_raindrop, select_feed_items
-from raindrop_rss.render import ATOM_NS, render_atom, render_rss
+from raindrop_rss.render import ATOM_NS, MEDIA_NS, render_atom, render_rss
 
 
 def test_selects_articles_by_any_tag_deduplicates_sorts_and_limits() -> None:
@@ -85,3 +85,18 @@ def test_rendering_is_deterministic(app_config) -> None:
     assert render_rss(app_config, feed, items, NOW) == render_rss(
         app_config, feed, items, NOW
     )
+
+
+def test_publishes_only_valid_cover_urls_in_both_formats(app_config) -> None:
+    feed = app_config.feeds[0]
+    cover = "https://images.example.com/cover.jpg?w=320&h=180"
+    raw = [
+        {**raindrop_item(1), "cover": cover},
+        {**raindrop_item(2), "cover": "<screenshot>"},
+        {**raindrop_item(3), "cover": "https://user@images.example.com/private.jpg"},
+    ]
+    items = select_feed_items(raw, feed.normalized_tags, feed.max_items)
+    for render in (render_atom, render_rss):
+        root = ET.fromstring(render(app_config, feed, items, NOW))
+        thumbnails = root.findall(f".//{{{MEDIA_NS}}}thumbnail")
+        assert [thumbnail.get("url") for thumbnail in thumbnails] == [cover]

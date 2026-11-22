@@ -8,8 +8,10 @@ from .config import AppConfig, FeedConfig
 from .models import FeedItem
 
 ATOM_NS = "http://www.w3.org/2005/Atom"
+MEDIA_NS = "http://search.yahoo.com/mrss/"
 ET.register_namespace("", ATOM_NS)
 ET.register_namespace("atom", ATOM_NS)
+ET.register_namespace("media", MEDIA_NS)
 
 
 def _atom(name: str) -> str:
@@ -58,6 +60,8 @@ def render_atom(
         ET.SubElement(entry, _atom("published")).text = _isoformat(item.published)
         ET.SubElement(entry, _atom("updated")).text = _isoformat(item.updated)
         ET.SubElement(entry, _atom("summary"), {"type": "text"}).text = item.summary
+        if item.thumbnail_url:
+            ET.SubElement(entry, f"{{{MEDIA_NS}}}thumbnail", {"url": item.thumbnail_url})
         for category in item.categories:
             ET.SubElement(entry, _atom("category"), {"term": category})
 
@@ -96,6 +100,8 @@ def render_rss(
         guid.text = f"raindrop:{feed_item.raindrop_id}"
         ET.SubElement(item, "pubDate").text = format_datetime(feed_item.published, usegmt=True)
         ET.SubElement(item, "description").text = feed_item.summary
+        if feed_item.thumbnail_url:
+            ET.SubElement(item, f"{{{MEDIA_NS}}}thumbnail", {"url": feed_item.thumbnail_url})
         for category in feed_item.categories:
             ET.SubElement(item, "category").text = category
 
