@@ -1,0 +1,30 @@
+config/feeds.json
+  h_00eb66f3b967dd 13,22
+src/raindrop_rss/render.py
+  s_bcc801ce93c045::t_73fb134918818f 11,15,44-45,87
+src/raindrop_rss/embedded_config.py
+  s_bcc801ce93c045::t_3930df1572fe99 3
+tests/test_models_and_render.py
+  s_bcc801ce93c045::t_73fb134918818f 8,52-53,57,75-77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8fea6cc8c8f2627122767e92697e45ee79cdb973",
+  "prompts": {},
+  "humans": {
+    "h_00eb66f3b967dd": {
+      "author": "Brad Armstrong <hashbrown1+git@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_bcc801ce93c045": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a21081-0193-7181-97ed-d6bc446c22e9",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "Brad Armstrong <hashbrown1+git@gmail.com>"
+    }
+  }
+}
