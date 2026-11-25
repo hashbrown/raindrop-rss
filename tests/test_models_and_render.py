@@ -5,7 +5,7 @@ from xml.etree import ElementTree as ET
 from conftest import NOW, raindrop_item
 
 from raindrop_rss.models import normalize_raindrop, select_feed_items
-from raindrop_rss.render import ATOM_NS, MEDIA_NS, render_atom, render_rss
+from raindrop_rss.render import ATOM_NS, DC_NS, MEDIA_NS, render_atom, render_rss
 
 
 def test_selects_articles_by_any_tag_deduplicates_sorts_and_limits() -> None:
@@ -49,10 +49,12 @@ def test_atom_contains_required_metadata_and_escapes_text(app_config) -> None:
 
     assert root.tag == f"{{{ATOM_NS}}}feed"
     assert root.findtext("a:id", namespaces=ns) == "https://feeds.example.com/ai"
-    assert root.findtext("a:author/a:name", namespaces=ns) == "Test Publisher"
+    assert root.findtext("a:author/a:name", namespaces=ns) == "Byline unavailable"
+    assert root.findtext(f"{{{DC_NS}}}publisher") == "Test Publisher"
     assert root.find("a:link[@rel='self']", ns).attrib["href"].endswith("/ai.atom")
     entry = root.find("a:entry", ns)
     assert entry is not None
+    assert entry.find(f"{{{DC_NS}}}publisher") is None
     assert entry.findtext("a:id", namespaces=ns) == "tag:raindrop.io,2026:bookmark/7"
     assert entry.findtext("a:summary", namespaces=ns) == "A <note> & detail"
     assert entry.find("a:category", ns).attrib["term"] == "ai"
@@ -70,6 +72,9 @@ def test_rss_contains_required_metadata_and_stable_guid(app_config) -> None:
     assert channel is not None
     assert channel.findtext("title") == "AI Feed"
     assert channel.findtext("language") == "en-US"
+    assert channel.findtext(f"{{{DC_NS}}}publisher") == "Test Publisher"
+    assert channel.find("item/author") is None
+    assert channel.find(f"item/{{{DC_NS}}}publisher") is None
     assert channel.findtext("item/guid") == "raindrop:9"
     assert channel.find("item/guid").attrib["isPermaLink"] == "false"
     self_link = channel.find(f"{{{ATOM_NS}}}link")

@@ -8,9 +8,11 @@ from .config import AppConfig, FeedConfig
 from .models import FeedItem
 
 ATOM_NS = "http://www.w3.org/2005/Atom"
+DC_NS = "http://purl.org/dc/elements/1.1/"
 MEDIA_NS = "http://search.yahoo.com/mrss/"
 ET.register_namespace("", ATOM_NS)
 ET.register_namespace("atom", ATOM_NS)
+ET.register_namespace("dc", DC_NS)
 ET.register_namespace("media", MEDIA_NS)
 
 
@@ -39,7 +41,8 @@ def render_atom(
     ET.SubElement(root, _atom("subtitle"), {"type": "text"}).text = feed.description
     ET.SubElement(root, _atom("updated")).text = _isoformat(_feed_updated(items, generated_at))
     author = ET.SubElement(root, _atom("author"))
-    ET.SubElement(author, _atom("name")).text = app.publisher_name
+    ET.SubElement(author, _atom("name")).text = "Byline unavailable"
+    ET.SubElement(root, f"{{{DC_NS}}}publisher").text = app.publisher_name
     ET.SubElement(
         root,
         _atom("link"),
@@ -81,6 +84,7 @@ def render_rss(
     ET.SubElement(channel, "title").text = feed.title
     ET.SubElement(channel, "link").text = app.base_url
     ET.SubElement(channel, "description").text = feed.description
+    ET.SubElement(channel, f"{{{DC_NS}}}publisher").text = app.publisher_name
     ET.SubElement(channel, "language").text = app.language
     ET.SubElement(channel, "lastBuildDate").text = format_datetime(
         _feed_updated(items, generated_at), usegmt=True

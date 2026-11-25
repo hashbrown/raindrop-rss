@@ -10,7 +10,7 @@
   "feeds": [
     {
       "slug": "eng",
-      "title": "Brad Armstrong - Engineering Reads ",
+      "title": "Engineering Reads ",
       "description": "Feed your brain, update your priors. Broadly focused on software engineering. Biased for my teams or my interests. I mean it's my bookmarks after all.",
       "tags": ["rss-eng"],
       "redacted_tags": ["rss-eng", "rss-eng-mgmt", "mc", "mc-eng", "mc-leaders", "c42"],
@@ -19,7 +19,7 @@
     },
     {
       "slug": "eng-leaders",
-      "title": "Brad Armstrong -  Engineering Leadership Reads",
+      "title": "Leadership Reads",
       "description": "Feed your brain, update your priors. Broadly focused on leadership in product and software engineering orgs. Biased for my teams or my interests. I mean it's my bookmarks after all.",
       "tags": ["rss-eng-mgmt"],
       "redacted_tags": ["rss-eng", "rss-eng-mgmt", "mc", "mc-eng", "mc-leaders", "c42"],
